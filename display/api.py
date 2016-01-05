@@ -77,6 +77,7 @@ class NationalRail(Api):
 
             now = datetime.datetime.now()
             last_train = None
+            next_train = None
             for i, data_point in enumerate(sample):
                 std = dateutil.parser.parse(data_point["std"])
                 etd = dateutil.parser.parse(data_point["etd"])
@@ -85,17 +86,21 @@ class NationalRail(Api):
                     break
                 last_train = (etd-now, etd-std)
 
-            wait = trains.get_time_left(next_train[0] - self.walk)
+            if next_train:
+                wait = trains.get_time_left(next_train[0] - self.walk)
 
-            delay_current = next_train[1].total_seconds()
-            delay_trend = (next_train[1] - last_train[1]).total_seconds()
+                delay_current = next_train[1].total_seconds()
+                delay_trend = (next_train[1] - last_train[1]).total_seconds()
 
-            if delay_current <= 0:
-                delay_status = trains.get_train(-1) # on time
+                if delay_current <= 0:
+                    delay_status = trains.get_train(-1) # on time
+                else:
+                    # yellow if delayed less than previous train
+                    # red if delayed same or more than previous train
+                    delay_status = trains.get_train(delay_trend > 0)
             else:
-                # yellow if delayed less than previous train
-                # red if delayed same or more than previous train
-                delay_status = trains.get_train(delay_trend > 0)
+                wait = trains.get_time_left(None)
+                delay_status = trains.get_train(1)
 
         return (0, [delay_status, wait, delay_status])
 

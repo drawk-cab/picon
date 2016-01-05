@@ -38,20 +38,21 @@ if __name__=="__main__":
     now = datetime.datetime.now().replace(second=0, microsecond=0)
     now_today = now.hour*60 + now.minute
 
-    for train in response["trainServices"]:
-        std_wait = get_wait(train["std"], now_today)
-        if std_wait:
-            std = now+datetime.timedelta(0,std_wait)
-        else:
-            std = now
+    if "trainServices" in response and response["trainServices"]:
+        for train in response["trainServices"]:
+            std_wait = get_wait(train["std"], now_today)
+            if std_wait:
+                std = now+datetime.timedelta(0,std_wait)
+            else:
+                std = now
 
-        etd_wait = get_wait(train["etd"], now_today)
-        if etd_wait:
-            etd = now+datetime.timedelta(0,etd_wait)
-        else:
-            etd = std
+            etd_wait = get_wait(train["etd"], now_today)
+            if etd_wait:
+                etd = now+datetime.timedelta(0,etd_wait)
+            else:
+                etd = std
 
-        status.append({"std": std.isoformat(),
-                       "etd": etd.isoformat()})
+            status.append({"std": std.isoformat(),
+                           "etd": etd.isoformat()})
 
     print(json.dumps(status))

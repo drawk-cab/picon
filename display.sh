@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 display/main.py -l
+python3 display/main.py

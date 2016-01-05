@@ -23,6 +23,18 @@ class Icon:
             s += '\n'
         return s
 
+    def get_pixels(self, scale=255, w=8, h=8):
+        d = []
+        for y in range(min(h,len(self.data))):
+            l = [[int(r*scale), int(g*scale), int(b*scale)] for r,g,b in self.data[y]][:w]
+            while len(l)<w:
+                l.extend([0,0,0])
+            d.extend(l)
+        while len(d)<w*h:
+            d.extend([0,0,0])
+        return d
+            
+
 class IconSet:
     def __init__(self, ppm_file):
         with open(ppm_file,'r') as f:

@@ -12,10 +12,10 @@ if __name__=="__main__":
     parser.add_argument('-d', '--display', default="stdout", choices=device.CHOICES.keys(),
                        help='Where to display')
 
-    parser.add_argument('-l', '--loop', action="store_true",
-                       help='Loop at end')
+    parser.add_argument('-l', '--loop', type=int, default=0,
+                       help='Number of minutes to loop for (0 = display once only)')
 
-    parser.add_argument('-w', '--wait', type=float, default=1,
+    parser.add_argument('-w', '--wait', type=float, default=2,
                        help='Time to wait between frames')
 
     parser.add_argument('-p', '--priority', type=float, default=0,
@@ -29,8 +29,6 @@ if __name__=="__main__":
 
     args = parser.parse_args()
 
-    use_device = device.CHOICES[args.display]
-
     if args.cmd:
         rotate = [api.CHOICES[args.cmd](**vars(args))]
     else:
@@ -38,12 +36,17 @@ if __name__=="__main__":
                    api.CHOICES["nationalrail"](walk=10) ]
 
     loop = True
-    while loop:
-        for each_api in rotate:
-            priority, frames = each_api.get()
-            if priority >= args.priority:
-                for frame in frames:
-                    use_device.display(frame)
-                    time.sleep(args.wait)
-        loop = args.loop
+    start_time = time.time()
+
+    with device.CHOICES[args.display]() as use_device:
+        while loop:
+            for each_api in rotate:
+                priority, frames = each_api.get()
+                if priority >= args.priority:
+                    for frame in frames:
+                        use_device.display(frame)
+                        time.sleep(args.wait)
+            if (time.time() - start_time) > (args.loop*60):
+                loop = False
+
 
