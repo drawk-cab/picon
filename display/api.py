@@ -8,37 +8,50 @@ import dateutil.parser
 import json
 
 class Api:
-    HELP = 'No help for this API.'
+    '''No help for this API.'''
 
-    def __init__(self):
-        pass
-
+    @staticmethod
     def define_args(parser):
-        pass # no arguments
-    
-class RandomNumber(Api):
-    HELP = 'Random number'
+        parser.add_argument('-w', '--wait', type=float, help="Wait between frames (s)")
 
     def __init__(self, **args):
+        self.wait = args.get("wait", 1.5)
+
+
+class RandomNumber(Api):
+    '''Random number'''
+
+    @staticmethod
+    def define_args(parser):
+        Api.define_args(parser)
+        parser.add_argument('min', type=int, help="Minimum")
+        parser.add_argument('max', type=int, help="Maximum")
+
+    def __init__(self, **args):
+        Api.__init__(self, **args)
         self.min = args["min"]
         self.max = args["max"]
 
     def get(self):
-        return (1, [weather.get_temperature( random.randrange(self.min, self.max) )])
+        return (1, [weather.get_temperature( random.randrange(self.min, self.max) )], self.wait)
 
-    def define_args(parser):
-        parser.add_argument('min', type=int, help="Minimum")
-        parser.add_argument('max', type=int, help="Maximum")
 
 class MetOffice(Api):
-    HELP = 'The Met. Office DataPoint API (http://www.metoffice.gov.uk/datapoint/API) via samples/metoffice'
+    '''The Met. Office DataPoint API (http://www.metoffice.gov.uk/datapoint/API) via samples/metoffice'''
+
+    @staticmethod
+    def define_args(parser):
+        Api.define_args(parser)
+        parser.add_argument('sample', type=str, help="Sample file name")
 
     def __init__(self, **args):
+        Api.__init__(self, **args)
+        self.sample = args['sample']
         self.last_update = None
         self.value = None
 
     def get(self):
-        with open('samples/metoffice', 'r') as f:
+        with open(self.sample, 'r') as f:
             sample = json.load(f)
 
             now = datetime.datetime.utcnow().isoformat()
@@ -60,19 +73,27 @@ class MetOffice(Api):
         temperature = weather.get_temperature(temperature)
         type = weather.get_weather_type(type)
 
-        return (0, [type, temperature, type])
+        return (0, [type, temperature, type], self.wait)
 
 
 class NationalRail(Api):
-    HELP = 'The National Rail Live Departures, via Huxley / samples/nationalrail'
+    '''The National Rail Live Departures, via Huxley / samples/nationalrail'''
+
+    @staticmethod
+    def define_args(parser):
+        Api.define_args(parser)
+        parser.add_argument('walk', type=int, help="Walk time, minutes")
+        parser.add_argument('sample', type=str, help="Sample file name")
 
     def __init__(self, **args):
+        Api.__init__(self, **args)
         self.last_update = None
         self.value = None
         self.walk = datetime.timedelta(0, args["walk"]*60)
+        self.sample = args["sample"]
 
     def get(self):
-        with open('samples/nationalrail', 'r') as f:
+        with open(self.sample, 'r') as f:
             sample = json.load(f)
 
             now = datetime.datetime.now()
@@ -102,10 +123,8 @@ class NationalRail(Api):
                 wait = trains.get_time_left(None)
                 delay_status = trains.get_train(1)
 
-        return (0, [delay_status, wait, delay_status])
+        return (0, [delay_status, wait, delay_status], self.wait)
 
-    def define_args(parser):
-        parser.add_argument('walk', type=int, help="Walk time, minutes")
 
 CHOICES = { 'random': RandomNumber,
             'metoffice': MetOffice,

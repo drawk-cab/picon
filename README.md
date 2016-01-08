@@ -26,13 +26,26 @@ Also relies on the https://huxley.apphb.com/ service to convert National Rail XM
 The display program looks in the `samples` directory for API responses.
 
 * `refresh_trains.sh ORG DST` will update the train data (ORG and DST are the 3-letter codes for origin and destination station)
-* `refresh_weather.sh` will update the weather data
+* `refresh_weather.sh STATION`  will update the weather data for station number STATION (there's a script in api/ to find your station)
 
 Add these to your crontab as you see fit.
 
-Once there is data in `samples`...
+Data is saved into the samples/ directory.
+
+Next edit the config.json file as you want. Here you can configure
+* the walk time to your station
+* the display speed
+
+Once there is data in the samples file...
 
 `display.sh` will output icons to the terminal for testing, just once.
 
 `sense_hat.sh N` will display them on the Sense Hat, looping for N minutes.
+
+## To do
+
+* Run refresh_x from python using a timer thread instead of crontab
+* Plumb API config into config.json
+* Provide a web interface
+
 

@@ -1,0 +1,10 @@
+[
+    {   "api":      "nationalrail",
+        "walk":     10,
+        "sample":   "samples/nationalrail"
+    },
+    {   "api":      "metoffice",
+        "sample":   "samples/metoffice"
+    }
+]
+
