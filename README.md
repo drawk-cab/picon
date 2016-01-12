@@ -1,6 +1,8 @@
-# astropicon
+# picon
 
-Display 8x8 icons on an Astro-Pi or Unicorn-Pi based on sensor values and APIs 
+(Formerly astropicon)
+
+Display 8x8 icons on an Astro-Pi / Sense HAT based on sensor values and APIs 
 
 ## Dependencies
 
@@ -41,11 +43,4 @@ Once there is data in the samples file...
 `display.sh` will output icons to the terminal for testing, just once.
 
 `sense_hat.sh N` will display them on the Sense Hat, looping for N minutes.
-
-## To do
-
-* Run refresh_x from python using a timer thread instead of crontab
-* Plumb API config into config.json
-* Provide a web interface
-
 
