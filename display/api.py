@@ -96,12 +96,12 @@ class NationalRail(Api):
         with open(self.sample, 'r') as f:
             sample = json.load(f)
 
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(datetime.timezone.utc)
             last_train = None
             next_train = None
             for i, data_point in enumerate(sample):
-                std = dateutil.parser.parse(data_point["std"])
-                etd = dateutil.parser.parse(data_point["etd"])
+                std = dateutil.parser.parse(data_point["std"]).replace(tzinfo=datetime.timezone.utc)
+                etd = dateutil.parser.parse(data_point["etd"]).replace(tzinfo=datetime.timezone.utc)
                 if etd > (now + self.walk):
                     next_train = (etd-now, etd-std)
                     break
