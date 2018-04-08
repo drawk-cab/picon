@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
-import device
+import logging
 import argparse
-from source import DataSource
 import time
 import json
+from source import DataSource
+import source.digit, source.random
+import device
 
 if __name__=="__main__":
 
@@ -32,16 +34,19 @@ if __name__=="__main__":
     elif args.config:
         rotate = []
         config = json.load(open(args.config,"r"))
-        for source_args in config:
-            rotate.append( DataSource.CHOICES[source_args["source"]](**source_args) )
     else:
-        rotate = [ DataSource.CHOICES["random"](min=-10,max=40) ]
+        rotate = []
+        config = json.load(open("config.json","r"))
+        logging.warn("No config.file specified, using 'config.json'")
 
-    loop = True
+    for source_args in config:
+        rotate.append( DataSource.CHOICES[source_args["source"]](**source_args) )
+
+    looping = True
     start_time = time.time()
 
     with device.CHOICES[args.display]() as use_device:
-        while loop:
+        while looping:
             for each_source in rotate:
                 use_device.display(each_source.banner)
                 time.sleep(1)

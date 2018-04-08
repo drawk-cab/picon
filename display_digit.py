@@ -3,7 +3,7 @@
 import argparse
 import time
 import device
-import source
+from source.digit import SingleDigit
 
 if __name__=="__main__":
 
@@ -17,7 +17,7 @@ if __name__=="__main__":
 
     args = parser.parse_args()
 
-    source = source.SingleDigit(filename=args.filename)
+    source = SingleDigit(filename=args.filename)
 
     with device.CHOICES[args.display]() as use_device:
         while True:
