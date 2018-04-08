@@ -1,10 +1,10 @@
 [
-    {   "source": "digit",
-        "filename": "samples/digit"
-    },
     {   "source": "random",
         "min": 5,
         "max": 25
+    },
+    {   "source": "digit",
+        "filename": "samples/digit"
     }
 ]
 
