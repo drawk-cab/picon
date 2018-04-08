@@ -23,6 +23,14 @@ class Icon:
             s += '\n'
         return s
 
+    def wipe(self, other):
+        frames = [self]
+        for x in range(1,len(self.data)):
+            frame_data = other.data[:x] + self.data[x:]
+            frames.append(Icon(frame_data))
+        frames.append(other)
+        return frames
+
     def get_pixels(self, scale=255, w=8, h=8):
         d = []
         for y in range(min(h,len(self.data))):

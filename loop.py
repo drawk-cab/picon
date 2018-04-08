@@ -4,15 +4,18 @@ import logging
 import argparse
 import time
 import json
+
 from source import DataSource
 import source.digit, source.random
-import device
+
+from device import Device
+import device.sense_hat
 
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description="Display informative icons.")
 
-    parser.add_argument("-d", "--display", default="stdout", choices=device.CHOICES.keys(),
+    parser.add_argument("-d", "--display", default="stdout", choices=Device.CHOICES.keys(),
                        help="Where to display")
 
     parser.add_argument("-c", "--config", type=str,
@@ -45,15 +48,17 @@ if __name__=="__main__":
     looping = True
     start_time = time.time()
 
-    with device.CHOICES[args.display]() as use_device:
+    with Device.CHOICES[args.display]() as use_device:
         while looping:
             for each_source in rotate:
                 use_device.display(each_source.banner)
                 time.sleep(1)
                 frames = each_source.read()
                 for frame in frames:
-                    use_device.display(frame)
+                    use_device.display(frame, each_source["transition"])
                     time.sleep(2)
+                use_device.clear()
+                time.sleep(0.5)
             if (time.time() - start_time) > (args.loop*60):
                 loop = False
 

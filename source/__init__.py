@@ -14,7 +14,11 @@ class DataSource:
     def define_args(parser):
         pass
 
+    def __getitem__(self, p):
+        return self.args.get(p, None)
+
     def __init__(self, **args):
+        self.args = args
         if not hasattr(self,"banner"):
             self.banner = weather.conditions("sun")
 
