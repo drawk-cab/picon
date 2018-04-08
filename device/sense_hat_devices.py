@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
-from . import *
 import time
+from device.base_devices import Device
+
+_SenseHat = None
 
 class SenseHat(Device):
     # this sense hat has the USB port on the right
@@ -9,7 +11,7 @@ class SenseHat(Device):
         if _SenseHat:
             self.hat = _SenseHat()
         else:
-            raise NotSupportedError("Sense Hat display requires the sense_hat module.")
+            raise RuntimeError("Sense Hat display requires the sense_hat module.")
         Device.__init__(self)
 
     def display(self, icon, transition=None):
@@ -44,11 +46,10 @@ class LeftSenseHat(SenseHat):
 try:
     from sense_hat import SenseHat as _SenseHat
     Device.CHOICES.update({
-            "astropi": SenseHat,
-            "sense": SenseHat,
-            "v-sense": VerticalSenseHat,
-            "l-sense": LeftSenseHat })
+        "astropi": SenseHat,
+        "sense": SenseHat,
+        "v-sense": VerticalSenseHat,
+        "l-sense": LeftSenseHat })
 except ImportError:
-    _SenseHat = None
-
+    pass
 

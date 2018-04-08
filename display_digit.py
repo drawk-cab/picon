@@ -2,14 +2,14 @@
 
 import argparse
 import time
+import device
 from source.digit import SingleDigit
-from device import Device
 
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description="Display a single digit from a file.")
 
-    parser.add_argument("-d", "--display", default="stdout", choices=Device.CHOICES.keys(),
+    parser.add_argument("-d", "--display", default="stdout", choices=device.choices.keys(),
                        help="Where to display")
 
     parser.add_argument("-f", "--filename", type=str, default="samples/digit",
@@ -19,7 +19,7 @@ if __name__=="__main__":
 
     source = SingleDigit(filename=args.filename)
 
-    with Device.CHOICES[args.display]() as use_device:
+    with device.choices[args.display]() as use_device:
         while True:
             use_device.display(source.read()[0])
             time.sleep(1)

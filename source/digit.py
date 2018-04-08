@@ -2,7 +2,7 @@
 
 import icons.base as icons
 import logging
-from . import *
+from source.base_sources import DataSource, FileDataSource
 
 class SingleDigit(FileDataSource):
     '''Returns an icon corresponding to the first byte of the input file,

@@ -2,7 +2,7 @@
 
 import random
 import icons.base as icons
-from . import *
+from source.base_sources import DataSource
 
 class RandomNumber(DataSource):
     '''Returns a random number whenever it is read'''

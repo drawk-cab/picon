@@ -4,18 +4,14 @@ import logging
 import argparse
 import time
 import json
-
-from source import DataSource
-import source.digit, source.random
-
-from device import Device
-import device.sense_hat
+import source
+import device
 
 if __name__=="__main__":
 
-    parser = argparse.ArgumentParser(description="Display informative icons.")
+    parser = argparse.ArgumentParser(description="Display informative icons in a repeating loop.")
 
-    parser.add_argument("-d", "--display", default="stdout", choices=Device.CHOICES.keys(),
+    parser.add_argument("-d", "--display", default="stdout", choices=device.choices.keys(),
                        help="Where to display")
 
     parser.add_argument("-c", "--config", type=str,
@@ -26,29 +22,28 @@ if __name__=="__main__":
 
     subparsers = parser.add_subparsers(help="Which API to use", dest="cmd")
 
-    for name, source_class in DataSource.CHOICES.items():
+    for name, source_class in source.choices.items():
         subparser = subparsers.add_parser(name, help=source_class.__doc__)
         source_class.define_args(subparser)
 
     args = parser.parse_args()
 
     if args.cmd:
-        rotate = [ DataSource.CHOICES[args.cmd](**vars(args)) ]
-    elif args.config:
-        rotate = []
-        config = json.load(open(args.config,"r"))
+        rotate = [ source.choices[args.cmd](**vars(args)) ]
     else:
         rotate = []
-        config = json.load(open("config.json","r"))
-        logging.warn("No config.file specified, using 'config.json'")
-
-    for source_args in config:
-        rotate.append( DataSource.CHOICES[source_args["source"]](**source_args) )
+        if args.config:
+            config = json.load(open(args.config,"r"))
+        else:
+            config = json.load(open("config.json","r"))
+            logging.warn("No config.file specified, using 'config.json'")
+        for source_args in config:
+            rotate.append( source.choices[source_args["source"]](**source_args) )
 
     looping = True
     start_time = time.time()
 
-    with Device.CHOICES[args.display]() as use_device:
+    with device.choices[args.display]() as use_device:
         while looping:
             for each_source in rotate:
                 use_device.display(each_source.banner)
