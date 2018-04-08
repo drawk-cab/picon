@@ -2,3 +2,6 @@ __pycache__
 *.pyc
 samples/*
 crontab.err
+metoffice
+nationalrail
+

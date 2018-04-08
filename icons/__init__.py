@@ -2,7 +2,7 @@
 
 import re
 
-def skip_comments(f):
+def _skip_comments(f):
     while True:
         r = f.readline()
         if r.strip() and not r.startswith("#"):
@@ -38,12 +38,12 @@ class Icon:
 class IconSet:
     def __init__(self, ppm_file):
         with open(ppm_file,'r') as f:
-            ppm = skip_comments(f)
+            ppm = _skip_comments(f)
             if ppm.strip() != 'P3':
                 raise NotImplementedError("icon images must be PPM-ASCII (P3)")
-            self.width, self.height = (int(x) for x in filter(lambda x:x, re.split('[^A-Z0-9]+', skip_comments(f))))
-            max = int(skip_comments(f))
-            first_line = skip_comments(f)
+            self.width, self.height = (int(x) for x in filter(lambda x:x, re.split('[^A-Z0-9]+', _skip_comments(f))))
+            max = int(_skip_comments(f))
+            first_line = _skip_comments(f)
             self.data = [float(x)/max for x in filter(lambda x:x, re.split('[^A-Z0-9]+', first_line + f.read()))]
             if len(self.data) != self.width*self.height*3:
                 raise ValueError("Data had length %s but should have been %s*%s*3 = %s" % (len(self.data), self.width, self.height, self.width*self.height*3))

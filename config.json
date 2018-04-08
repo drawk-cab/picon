@@ -1,10 +1,10 @@
 [
-    {   "api":      "nationalrail",
-        "walk":     10,
-        "sample":   "samples/nationalrail"
+    {   "source": "digit",
+        "filename": "samples/digit"
     },
-    {   "api":      "metoffice",
-        "sample":   "samples/metoffice"
+    {   "source": "random",
+        "min": 5,
+        "max": 25
     }
 ]
 
