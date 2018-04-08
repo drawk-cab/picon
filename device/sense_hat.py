@@ -13,10 +13,10 @@ class SenseHat(Device):
         Device.__init__(self)
 
     def display(self, icon, transition=None):
-        if transition=="wipe":
-            for frame in self.current.wipe(icon):
+        if transition:
+            for frame in self.current.transition(icon, transition):
                 self.hat.set_pixels(frame.get_pixels())
-                time.sleep(0.1)
+                time.sleep(0.05)
         else:
             self.hat.set_pixels(icon.get_pixels())
         self.current = icon

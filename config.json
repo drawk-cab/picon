@@ -4,7 +4,7 @@
         "max": 6
     },
     {   "source": "digit",
-        "transition": "wipe",
+        "transition": "scroll",
         "filename": "samples/digit"
     }
 ]

@@ -9,7 +9,7 @@ class Device:
     def display(self, icon, transition=None):
         if transition is not None:
             print("Transition: %s\n" % transition)
-            print(self.current.wipe(icon))
+            print(self.current.transition(icon, transition))
         print(icon)
         self.current = icon
 

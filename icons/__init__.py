@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import re
+import logging
 
 def _skip_comments(f):
     while True:
@@ -23,10 +24,23 @@ class Icon:
             s += '\n'
         return s
 
-    def wipe(self, other):
+    def transition(self, other, name):
         frames = [self]
         for x in range(1,len(self.data)):
-            frame_data = other.data[:x] + self.data[x:]
+            if name == "wipe":
+                frame_data = other.data[:x] + self.data[:x]
+            elif name == "scroll":
+                frame_data = self.data[x:] + other.data[:x]
+            else:
+                logging.warn("Unknown transition type: %s" % name)
+                return []
+            frames.append(Icon(frame_data))
+        frames.append(other)
+        return frames
+
+    def scroll(self, other):
+        frames = [self]
+        for x in range(1,len(self.data)):
             frames.append(Icon(frame_data))
         frames.append(other)
         return frames
