@@ -2,14 +2,14 @@
 
 import argparse
 import time
-import device
 import icons.weather
+from device import Device
 
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description="Display a single icon until killed.")
 
-    parser.add_argument("-d", "--display", default="stdout", choices=device.CHOICES.keys(),
+    parser.add_argument("-d", "--display", default="stdout", choices=Device.CHOICES.keys(),
                        help="Where to display")
 
     parser.add_argument("-i", "--icon", type=str, default="sun",
@@ -19,7 +19,7 @@ if __name__=="__main__":
 
     i = icons.weather.conditions(args.icon)
 
-    with device.CHOICES[args.display]() as use_device:
+    with Device.CHOICES[args.display]() as use_device:
         while True:
             use_device.display(i)
             time.sleep(999)
