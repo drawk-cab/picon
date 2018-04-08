@@ -46,12 +46,14 @@ if __name__=="__main__":
     with device.choices[args.display]() as use_device:
         while looping:
             for each_source in rotate:
-                use_device.display(each_source.banner)
-                time.sleep(1)
+                if each_source.banner:
+                    use_device.display(each_source.banner)
+                    time.sleep(1)
                 frames = each_source.read()
                 for frame in frames:
-                    use_device.display(frame, each_source["transition"])
-                    time.sleep(2)
+                    if frame:
+                        use_device.display(frame, each_source["transition"])
+                        time.sleep(2)
                 use_device.clear()
                 time.sleep(0.5)
             if (time.time() - start_time) > (args.loop*60):

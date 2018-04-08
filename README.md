@@ -29,19 +29,32 @@ on a connected Sense HAT, run `./display_icon.py -d sense`
 * Change the value while the program is running.
 * What happens if you put something in the file that isn't a digit?
 
+### Display a value in a repeating loop with a banner icon
+
+`loop.py` can display data from any available source.
+
+* `./loop.py digit samples/digit` will display the digit from above, but with a banner icon.
+* `./loop.py random 1 10` will display random numbers from 1 to 10.
+
+There may be more data sources installed. Run `./loop.py -h` to see them all.
+You can see help for a specific data source with `./loop.py <source> -h`.
+
+The `-l` parameter makes `loop.py` repeat the loop for a set time period:
+`./loop.py -l 5` makes it run for 5 minutes.
+
+`loop.py` also takes the `-d` parameter to display the icons on your device.
+
 ### Display several values with banner icons
 
 The previous programs got their information from only one place: they had a single data source.
-`./loop.py` can use several data sources, and you can configure which ones it uses.
+`loop.py` can use several data sources, and you can configure which ones it uses.
 
-Running `./loop.py` displays the random number and the digit from `samples/digit` in turn.
+The supplied configuration displays the random number and the digit from `samples/digit` in turn.
 
-You can make `loop.py` repeat the loop using the `-l` parameter:
-`./loop.py -l 5` makes it run for 5 minutes.
+### Configure different sources in a file
 
-### Configure different sources
-
-The data sources are configured in `config.json` in the order they appear in the loop.
+The data sources for `loop.py` are configured in the file `config.json`
+containing the sources in the order they appear in the loop.
 Each data source has parameters which apply to that source.
 
 * The `random` source has parameters `min` and `max` which control the lowest and highest random number the source will produce.
@@ -49,7 +62,12 @@ Each data source has parameters which apply to that source.
 
 Try adding a second `random` source with a different range, and running `./loop.py` again.
 
-(To do: probably YAML would be better here)
+### Display values with transitions
+
+You can add a parameter `transition` to any data source in `config.json` to specify a transition effect:
+
+* `wipe`
+* `scroll`
 
 ### Display weather and transport information sourced from an API
 

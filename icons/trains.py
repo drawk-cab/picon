@@ -1,16 +1,19 @@
 #!/usr/bin/python3
 
-from . import Iconet
+from . import IconSet
+import os
 import datetime
 
-_time_icons = IconSet("time-left.ppm")
-_delay_icons = IconSet("delay.ppm")
-_train_icons = IconSet("trains.ppm")
+_here = os.path.dirname(__file__)
+
+_time_icons = IconSet(os.path.join(_here,"time-left.ppm"))
+_delay_icons = IconSet(os.path.join(_here,"delay.ppm"))
+_train_icons = IconSet(os.path.join(_here,"trains.ppm"))
 
 def train_is_delayed(status):
-    if status > 0:
+    if status is True:
         return _train_icons.get(2, 0, 8) # red
-    elif status < 0:
+    elif status is False:
         return _train_icons.get(0, 0, 8) # green
     else:
         return _train_icons.get(1, 0, 8) # amber
