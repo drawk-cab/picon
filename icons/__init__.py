@@ -45,6 +45,11 @@ class Icon:
         frames.append(other)
         return frames
 
+    def get_pixel(self, x, y, scale=255):
+        pixel_y = len(self.data) - 1 - int(float(y) * len(self.data))
+        pixel_x = int(float(x) * len(self.data[pixel_y]))
+        return [int(c*scale) for c in self.data[pixel_y][pixel_x]]
+
     def get_pixels(self, scale=255, w=8, h=8):
         d = []
         for y in range(min(h,len(self.data))):
