@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 
-from . import IconSet
+from . import icons
 import os
 import logging
 import math
 
 _here = os.path.dirname(__file__)
 
-_temp_icons = IconSet(os.path.join(_here,"weather-temperatures.ppm"))
+_temp_icons = icons.IconSet(os.path.join(_here,"weather-temperatures.ppm"))
 
-_cond_icons = IconSet(os.path.join(_here,"weather-conditions.ppm"))
+_cond_icons = icons.IconSet(os.path.join(_here,"weather-conditions.ppm"))
 _cond_names = {
 	"moon_night":0,
 	"sun":1,

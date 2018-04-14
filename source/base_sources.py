@@ -2,7 +2,6 @@
 
 import random
 import json
-import icons.weather as weather
 import icons.base as icons
 import logging
 
@@ -20,7 +19,7 @@ class DataSource:
     def __init__(self, **args):
         self.args = args
         if not hasattr(self,"banner"):
-            self.banner = weather.conditions("sun")
+            self.banner = icons.digit_banner
 
 
 class FileDataSource(DataSource):

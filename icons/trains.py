@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 
-from . import IconSet
+from . import icons
 import os
 import datetime
 
 _here = os.path.dirname(__file__)
 
-_time_icons = IconSet(os.path.join(_here,"time-left.ppm"))
-_delay_icons = IconSet(os.path.join(_here,"delay.ppm"))
-_train_icons = IconSet(os.path.join(_here,"trains.ppm"))
+_time_icons = icons.IconSet(os.path.join(_here,"time-left.ppm"))
+_delay_icons = icons.IconSet(os.path.join(_here,"delay.ppm"))
+_train_icons = icons.IconSet(os.path.join(_here,"trains.ppm"))
 
 def train_is_delayed(status):
     if status is True:
