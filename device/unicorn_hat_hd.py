@@ -52,9 +52,13 @@ try:
     import unicornhathd
     _UnicornHat = unicornhathd # unlike the sense hat the unicorn is just a module
     Device.CHOICES.update({
-        "unicornhd": UnicornHatHD,
-        "v-unicornhd": VerticalUnicornHatHD,
-        "l-unicornhd": LeftUnicornHatHD })
+        "unicornhathd": UnicornHatHD,
+        "uhhd": UnicornHatHD,
+        "r-unicornhathd": UnicornHatHD,
+        "v-unicornhathd": VerticalUnicornHatHD,
+        "v-uhhd": VerticalUnicornHatHD,
+        "l-unicornhathd": LeftUnicornHatHD,
+        "l-uhhd": LeftUnicornHatHD })
 except ImportError:
     pass
 

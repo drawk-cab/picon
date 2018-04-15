@@ -47,9 +47,10 @@ try:
     from sense_hat import SenseHat as _SenseHat
     Device.CHOICES.update({
         "astropi": SenseHat,
-        "sense": SenseHat,
-        "v-sense": VerticalSenseHat,
-        "l-sense": LeftSenseHat })
+        "r-sensehat": SenseHat,
+        "sensehat": SenseHat,
+        "v-sensehat": VerticalSenseHat,
+        "l-sensehat": LeftSenseHat })
 except ImportError:
     pass
 

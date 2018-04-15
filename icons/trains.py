@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from . import icons
+
 import os
 import datetime
 
@@ -14,9 +15,9 @@ def train_is_delayed(status):
     if status is True:
         return _train_icons.get(2, 0, 8) # red
     elif status is False:
-        return _train_icons.get(0, 0, 8) # green
+        return _train_icons.get(2, 0, 8).colour(0.4, 0, 0) # green
     else:
-        return _train_icons.get(1, 0, 8) # amber
+        return _train_icons.get(2, 0, 8).colour(0.2, 0, 0) # amber
 
 def time_left(c):
     if c is None or not isinstance(c, datetime.timedelta):
