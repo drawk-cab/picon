@@ -34,6 +34,11 @@ def delay(td, max_delay=15):
     mins = (td.seconds + td.days*86400) // 60
 
     if mins <= 0:
-        return base.number(mins, icons.GREEN)
+        return icons.Report(base.number(mins, icons.GREEN),
+            banner=is_delayed(False))
+    elif mins > max_delay:
+        return icons.Report(base.number(mins, icons.RED),
+            banner=is_delayed(True))
     else:
-        return base.number(mins, icons.AMBER, 1, icons.RED, max_delay)
+        return icons.Report(base.number(mins, icons.AMBER, 1, icons.RED, max_delay),
+            banner=is_delayed(None))

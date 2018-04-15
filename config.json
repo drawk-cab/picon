@@ -6,6 +6,15 @@
     {   "source": "digit",
         "transition": "scroll",
         "filename": "samples/digit"
+    },
+    {   "source": "counter",
+        "max": 99
+    },
+    {   "source": "transport",
+        "filename": "samples/transport"
+    },
+    {   "source": "weather",
+        "filename": "samples/weather"
     }
 ]
 

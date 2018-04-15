@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import random
-import icons.base as icons
+from icons import icons, base
 from source.base_sources import DataSource
 
 class RandomNumber(DataSource):
@@ -16,10 +16,10 @@ class RandomNumber(DataSource):
     def __init__(self, **args):
         self.min = args["min"]
         self.max = args["max"]
-        self.banner = icons.random_banner
         DataSource.__init__(self, **args)
 
     def read(self):
-        return [icons.number( random.randrange(self.min, self.max+1) )]
+        return icons.Report(base.number( random.randrange(self.min, self.max+1) ),
+            banner=base.random_banner)
 
 DataSource.CHOICES["random"] = RandomNumber

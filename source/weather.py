@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import icons.weather as icons
+from icons import weather, icons
 import logging
 import json
 from source.base_sources import FileDataSource, DataSource
@@ -19,7 +19,7 @@ class Weather(FileDataSource):
         obj = self._readJSON()
 
         if obj is None:
-            return [icons.temperature(None)]
+            return icons.Report(weather.temperature(None))
 
         try:
             t = int(obj.get("temperature",None))
@@ -28,6 +28,6 @@ class Weather(FileDataSource):
 
         c = obj.get("conditions",None)
 
-        return [icons.conditions(c), icons.temperature(t)]
+        return icons.Report(weather.conditions(c), weather.temperature(t))
 
 DataSource.CHOICES["weather"] = Weather

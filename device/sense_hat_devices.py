@@ -14,7 +14,11 @@ class SenseHat(Device):
             raise RuntimeError("Sense Hat display requires the sense_hat module.")
         Device.__init__(self)
 
-    def display(self, icon, transition=None):
+    def display_icon(self, icon, transition=None, clear=False, is_banner=False):
+        if clear:
+            self.clear()
+            time.sleep(0.5)
+
         if transition:
             for frame in self.current.transition(icon, transition):
                 self.hat.set_pixels(frame.get_pixels())
@@ -22,6 +26,11 @@ class SenseHat(Device):
         else:
             self.hat.set_pixels(icon.get_pixels())
         self.current = icon
+
+        if is_banner:
+            time.sleep(0.8)
+        else:
+            time.sleep(1.5)
 
 
     def clear(self):

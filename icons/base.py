@@ -26,12 +26,12 @@ def error(e):
 def unknown(colour=icons.RED):
     return _number_icons.get(0, 0, 8).colour(colour)
 
-def number(n, c_min=icons.WHITE, n_min=0, c_max=None, n_max=0):
+def number(n, colour=icons.WHITE, n_min=0, c_max=None, n_max=0):
     if n is None:
         return unknown()
 
     try:
-        colour = icons.colour_between(n, c_min, n_min, c_max, n_max)
+        colour = icons.colour_between(n, colour, n_min, c_max, n_max)
         n = math.floor(n)
     except ValueError as e:
         logging.warn(e)

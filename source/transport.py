@@ -52,14 +52,6 @@ class Transport(FileDataSource):
         delay = estimated - scheduled
         wait = estimated - now
 
-        status = None
-        if delay > datetime.timedelta(0,600):
-            status = True
-        elif delay <= datetime.timedelta(0):
-            status = False
-
-        return [icons.is_delayed(status, mode),
-                icons.delay(delay),
-                icons.time_left(wait)]
+        return [icons.delay(delay), icons.time_left(wait)]
 
 DataSource.CHOICES["transport"] = Transport

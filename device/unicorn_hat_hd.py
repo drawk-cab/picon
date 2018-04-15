@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import time
+import logging
 from device.base_devices import Device
 
 _UnicornHat = None
@@ -15,26 +16,97 @@ class UnicornHatHD(Device):
             raise RuntimeError("Unicorn Hat display requires the unicornhathd module.")
         Device.__init__(self)
 
-    def display(self, icon, transition=None):
+    def display_icon(self, icon, transition=None, clear=False, is_banner=False):
+        if clear:
+            self.clear()
+
         if transition:
             for frame in self.current.transition(icon, transition):
-                self.display(frame)
+                self._display_icon(frame)
                 time.sleep(0.05)
         else:
-            for y in range(self.width):
-                for x in range(self.height):
-                    r, g, b = icon.get_pixel(x/self.width,y/self.height)
-                    self.hat.set_pixel(x,y,r,g,b)
-            self.hat.show()
+            self._display_icon(icon)
         self.current = icon
 
+        if is_banner:
+            time.sleep(0.8)
+        else:
+            time.sleep(1.5)
 
-    def clear(self):
+    def _display_icon(self, icon):
+        for y in range(self.width):
+            for x in range(self.height):
+                r, g, b = icon.get_pixel(x/self.width,y/self.height)
+                self.hat.set_pixel(x,y,r,g,b)
+        self.hat.show()
+
+    def clear(self, wait=True):
         self.hat.off()
+        if wait:
+            time.sleep(0.5)
         self.current = None
 
     def __exit__(self, *args):
-        self.clear()
+        self.clear(wait=False)
+
+class QuadUnicornHatHD(Device):
+    def __init__(self):
+        if _UnicornHat:
+            self.hat = _UnicornHat
+            self.width, self.height = _UnicornHat.get_shape()
+            self.icons = [[],[]]
+        else:
+            raise RuntimeError("Unicorn Hat display requires the unicornhathd module.")
+        Device.__init__(self)
+
+    def display_icon(self, icon, transition=None, clear=False, is_banner=False):
+        if clear or len(self.icons[1])>=2:
+            self.newline()
+        self.icons[1].append(icon)
+        self.refresh()
+
+        if is_banner:
+            time.sleep(0.1)
+        else:
+            time.sleep(1.5)
+
+    def clear(self):
+        self.newline()
+        self.refresh()
+
+    def newline(self):
+        self.icons = [self.icons[1], []]
+
+    def refresh_space(self, xs, ys, icon):
+        w = self.width//2
+        h = self.height//2
+        for y in range(h):
+           for x in range(w):
+               if icon is None:
+                   self.hat.set_pixel(w*xs+x, h*(1-ys)+y, 0, 0, 0)
+               else:
+                   r, g, b = icon.get_pixel(x/w, y/h)
+                   self.hat.set_pixel(w*xs+x, h*(1-ys)+y, r, g, b)
+
+    def refresh(self):
+        for xs in range(2):
+            for ys in range(2):
+                try:
+                    r = self.icons[ys]
+                except IndexError:
+                    self.refresh_space(xs, ys, None)
+                    continue
+                try:
+                    i = r[xs]
+                except IndexError:
+                    self.refresh_space(xs, ys, None)
+                    continue
+                self.refresh_space(xs, ys, i)
+        self.hat.show()
+
+
+    def __exit__(self, *args):
+        self.hat.off()
 
 class VerticalUnicornHatHD(UnicornHatHD):
     # this Unicorn hat has the USB port on the top
@@ -54,6 +126,7 @@ try:
     Device.CHOICES.update({
         "unicornhathd": UnicornHatHD,
         "uhhd": UnicornHatHD,
+        "q-uhhd": QuadUnicornHatHD,
         "r-unicornhathd": UnicornHatHD,
         "v-unicornhathd": VerticalUnicornHatHD,
         "v-uhhd": VerticalUnicornHatHD,
