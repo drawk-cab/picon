@@ -17,7 +17,6 @@ class SenseHat(Device):
     def display_icon(self, icon, transition=None, clear=False, is_banner=False):
         if clear:
             self.clear()
-            time.sleep(0.5)
 
         if transition:
             for frame in self.current.transition(icon, transition):
@@ -33,12 +32,14 @@ class SenseHat(Device):
             time.sleep(1.5)
 
 
-    def clear(self):
+    def clear(self, wait=True):
         self.hat.clear()
+        if wait:
+            time.sleep(0.5)
         self.current = None
 
     def __exit__(self, *args):
-        self.clear()
+        self.clear(wait=False)
 
 class VerticalSenseHat(SenseHat):
     # this sense hat has the USB port on the top
