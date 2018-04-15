@@ -1,7 +1,7 @@
 
 #!/usr/bin/python3
 
-import icons.trains as icons
+import icons.transport as icons
 import logging
 import json
 import pytz
@@ -9,10 +9,14 @@ import datetime
 import dateutil.parser
 from source.base_sources import FileDataSource, DataSource
 
-class Trains(FileDataSource):
+class Transport(FileDataSource):
     '''Returns icons for a train service report in a JSON input file of the format
 
-{ "scheduled": <ISO time>, "estimated": <ISO time> }
+{
+  "mode": "train" (default) | "bus" | "tram",
+  "scheduled": <ISO time>,
+  "estimated": <ISO time>
+}
 '''
 
     def __init__(self, **args):
@@ -23,9 +27,17 @@ class Trains(FileDataSource):
         obj = self._readJSON()
 
         if obj is None:
-            return [icons.temperature(None)]
+            return []
 
         now = datetime.datetime.now(pytz.utc)
+
+        mode = obj.get("mode",None)
+        if mode == "bus":
+            mode = icons.BUS
+        elif mode == "tram":
+            mode = icons.TRAM
+        else:
+            mode = icons.TRAIN
 
         try:
             scheduled = dateutil.parser.parse(obj.get("scheduled",None))
@@ -46,6 +58,8 @@ class Trains(FileDataSource):
         elif delay <= datetime.timedelta(0):
             status = False
 
-        return [icons.train_is_delayed(status), icons.delay(delay), icons.time_left(wait)]
+        return [icons.is_delayed(status, mode),
+                icons.delay(delay),
+                icons.time_left(wait)]
 
-DataSource.CHOICES["trains"] = Trains
+DataSource.CHOICES["transport"] = Transport

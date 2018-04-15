@@ -1,5 +1,5 @@
 #!/bin/bash
 
-python3 loop.py -d l-sense -c config.json "$@"
+python3 loop.py -d l-sensehat -c config.json "$@"
 
 

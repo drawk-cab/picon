@@ -3,6 +3,12 @@
 import re
 import logging
 
+RED = (0, 0, 0)
+AMBER = (0.15, 0, 0)
+GREEN = (0.35, 0, 0)
+BLUE = (0.65, 0, 0)
+WHITE = (0, -1, 0)
+
 def _skip_comments(f):
     while True:
         r = f.readline()
@@ -37,6 +43,17 @@ def _rgb_to_hsv(r, g, b):
     if g == maxc: return ((2.0+rc-bc)/6.0) % 1.0, s/maxc, v
     return ((4.0+gc-rc)/6.0) % 1.0, s/maxc, v
 
+def colour_between(n, c_min, n_min, c_max, n_max):
+    if n_min==n_max: return c_min
+    if c_max is None or c_min==c_max: return c_min
+    if n<n_min: return c_min
+    if n>n_max: return c_max
+    d = (n-n_min)/(n_max-n_min)
+    dh = c_max[0]-c_min[0]
+    ds = c_max[1]-c_min[1]
+    dv = c_max[2]-c_min[2]
+    return (c_min[0]+dh*d, c_min[1]+ds*d, c_min[2]+ds*d)
+
 class Icon:
     def __init__(self, data):
         self.data = data
@@ -51,7 +68,8 @@ class Icon:
             s += '\n'
         return s
 
-    def colour(self, dh, ds, dv):
+    def colour(self, dhsv):
+        dh, ds, dv = dhsv
         newdata = []
         for y in range(len(self.data)):
             newline = []
@@ -97,7 +115,7 @@ class Icon:
         while len(d)<w*h:
             d.extend([0,0,0])
         return d
-            
+
 
 class IconSet:
     def __init__(self, ppm_file):
@@ -134,4 +152,3 @@ class IconSet:
             data.append(line_data)
 
         return Icon(data)
-

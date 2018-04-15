@@ -1,13 +1,11 @@
 #!/usr/bin/python3
 
-from . import icons
+from . import icons, base
 import os
 import logging
 import math
 
 _here = os.path.dirname(__file__)
-
-_temp_icons = icons.IconSet(os.path.join(_here,"weather-temperatures.ppm"))
 
 _cond_icons = icons.IconSet(os.path.join(_here,"weather-conditions.ppm"))
 _cond_names = {
@@ -45,39 +43,36 @@ _cond_names = {
 	"unknown":31
 }
 
-def temperature(c):
-    if c is None:
-        return _temp_icons.get(7, 7, 8)
+def temperature(t, cold=0, warm=15, hot=35):
+    # "warm" means what will get a green number.
+    # There's more perceptual distance between red and green
+    # than green and blue, so "warm" should be on the cold side
+
+    if t is None:
+        return base.error("temperature: expected number, got None")
 
     try:
-        c = math.floor(c)
-    except ValueError as e:
-        logging.warn(e)
-        return _temp_icons.get(7, 7, 8)
+        if t > warm:
+            return base.number(t, icons.GREEN, warm, icons.RED, hot)
+        else:
+            return base.number(t, icons.BLUE, cold, icons.GREEN, warm)
+    except ValueError as e: # not a number?
+        return base.error("weather.temperature: %s" % e)
 
-    if c > 40:
-        return _temp_icons.get(0, 7, 8)
-    if c < -9:
-        return _temp_icons.get(1, 7, 8)
-
-    c = 40 - c
-    return _temp_icons.get(c%8, c//8, 8)
 
 def conditions(c):
     if isinstance(c, str):
         if c in _cond_names:
             c = _cond_names[c]
         else:
-            logging.warn("No icon for condition '%s'" % c)
-            return _cond_icons.get(7, 7, 8)
+            return base.error("weather.conditions: no icon for '%s'" % c)
 
     try:
         c = math.floor(c)
     except Exception as e:
-        logging.warn(e)
-        return _temp_icons.get(7, 7, 8)
+        return base.error("weather.conditions: %s" % e)
 
     if c is None or c < 0 or c > 30:
-        return _cond_icons.get(7, 7, 8)
+        return base.error("weather.conditions: %d out of range" % c)
     else:
         return _cond_icons.get(c%8, c//8, 8)
