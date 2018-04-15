@@ -6,8 +6,9 @@ import logging
 class Device:
     CHOICES = {}
 
-    def __init__(self):
+    def __init__(self, rotate=0):
         self.current = None
+        self.rotate = ((rotate // 90) * 90) % 360
 
     def display(self, item, transition=None, clear=True):
         '''Take an Icon, an iterable of Icons, a Report, or something similar, and display it.'''

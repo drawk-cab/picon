@@ -8,13 +8,14 @@ _UnicornHat = None
 
 class UnicornHatHD(Device):
     # this Unicorn hat has the USB port on the right
-    def __init__(self):
+    def __init__(self, rotate=0):
         if _UnicornHat:
             self.hat = _UnicornHat
             self.width, self.height = _UnicornHat.get_shape()
         else:
             raise RuntimeError("Unicorn Hat display requires the unicornhathd module.")
-        Device.__init__(self)
+        Device.__init__(self, rotate)
+        self.hat.rotation(self.rotate)
 
     def display_icon(self, icon, transition=None, clear=False, is_banner=False):
         if clear:
@@ -50,17 +51,18 @@ class UnicornHatHD(Device):
         self.clear(wait=False)
 
 class QuadUnicornHatHD(Device):
-    def __init__(self):
+    def __init__(self, rotate=0):
         if _UnicornHat:
             self.hat = _UnicornHat
             self.width, self.height = _UnicornHat.get_shape()
             self.icons = [[],[]]
         else:
             raise RuntimeError("Unicorn Hat display requires the unicornhathd module.")
-        Device.__init__(self)
+        Device.__init__(self, rotate)
+        self.hat.rotation(self.rotate)
 
     def display_icon(self, icon, transition=None, clear=False, is_banner=False):
-        if clear or len(self.icons[1])>=2:
+        if clear or is_banner or len(self.icons[1])>=2:
             self.newline()
         self.icons[1].append(icon)
         self.refresh()
@@ -108,30 +110,14 @@ class QuadUnicornHatHD(Device):
     def __exit__(self, *args):
         self.hat.off()
 
-class VerticalUnicornHatHD(UnicornHatHD):
-    # this Unicorn hat has the USB port on the top
-    def __init__(self):
-        UnicornHatHD.__init__(self)
-        self.hat.rotation(270)
-
-class LeftUnicornHatHD(UnicornHatHD):
-    # this Unicorn hat has the USB port on the left
-    def __init__(self):
-        UnicornHatHD.__init__(self)
-        self.hat.rotation(180)
-
 try:
     import unicornhathd
     _UnicornHat = unicornhathd # unlike the sense hat the unicorn is just a module
     Device.CHOICES.update({
         "unicornhathd": UnicornHatHD,
         "uhhd": UnicornHatHD,
-        "q-uhhd": QuadUnicornHatHD,
-        "r-unicornhathd": UnicornHatHD,
-        "v-unicornhathd": VerticalUnicornHatHD,
-        "v-uhhd": VerticalUnicornHatHD,
-        "l-unicornhathd": LeftUnicornHatHD,
-        "l-uhhd": LeftUnicornHatHD })
+        "quadunicornhathd": QuadUnicornHatHD,
+        "quhhd": QuadUnicornHatHD })
 except ImportError:
     pass
 

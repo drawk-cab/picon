@@ -6,13 +6,13 @@ from device.base_devices import Device
 _SenseHat = None
 
 class SenseHat(Device):
-    # this sense hat has the USB port on the right
-    def __init__(self):
+    def __init__(self, rotate=0):
         if _SenseHat:
             self.hat = _SenseHat()
         else:
             raise RuntimeError("Sense Hat display requires the sense_hat module.")
-        Device.__init__(self)
+        Device.__init__(self, rotate)
+        self.hat.rotation = rotate
 
     def display_icon(self, icon, transition=None, clear=False, is_banner=False):
         if clear:
@@ -41,26 +41,11 @@ class SenseHat(Device):
     def __exit__(self, *args):
         self.clear(wait=False)
 
-class VerticalSenseHat(SenseHat):
-    # this sense hat has the USB port on the top
-    def __init__(self):
-        SenseHat.__init__(self)
-        self.hat.rotation = 90
-
-class LeftSenseHat(SenseHat):
-    # this sense hat has the USB port on the left
-    def __init__(self):
-        SenseHat.__init__(self)
-        self.hat.rotation = 180
-
 try:
     from sense_hat import SenseHat as _SenseHat
     Device.CHOICES.update({
         "astropi": SenseHat,
-        "r-sensehat": SenseHat,
-        "sensehat": SenseHat,
-        "v-sensehat": VerticalSenseHat,
-        "l-sensehat": LeftSenseHat })
+        "sensehat": SenseHat })
 except ImportError:
     pass
 

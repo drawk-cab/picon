@@ -14,6 +14,9 @@ if __name__=="__main__":
     parser.add_argument("-d", "--display", default="stdout", choices=device.choices.keys(),
                        help="Where to display")
 
+    parser.add_argument("-r", "--rotate", type=int, default=0,
+                       help="Display rotation (snapped to 90 degrees on most devices)")
+
     parser.add_argument("-c", "--config", type=str,
                        help="Configuration JSON file")
 
@@ -29,23 +32,23 @@ if __name__=="__main__":
     args = parser.parse_args()
 
     if args.cmd:
-        rotate = [ source.choices[args.cmd](**vars(args)) ]
+        carousel = [ source.choices[args.cmd](**vars(args)) ]
     else:
-        rotate = []
+        carousel = []
         if args.config:
             config = json.load(open(args.config,"r"))
         else:
             config = json.load(open("config.json","r"))
             logging.warn("No config.file specified, using 'config.json'")
         for source_args in config:
-            rotate.append( source.choices[source_args["source"]](**source_args) )
+            carousel.append( source.choices[source_args["source"]](**source_args) )
 
     looping = True
     start_time = time.time()
 
-    with device.choices[args.display]() as use_device:
+    with device.choices[args.display](rotate=args.rotate) as use_device:
         while looping:
-            for each_source in rotate:
+            for each_source in carousel:
                 use_device.display(each_source.read(), each_source["transition"])
             if (time.time() - start_time) > (args.loop*60):
                 loop = False

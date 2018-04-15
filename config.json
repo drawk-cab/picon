@@ -1,4 +1,6 @@
 [
+    {   "source": "time"
+    },
     {   "source": "random",
         "min": 1,
         "max": 6
