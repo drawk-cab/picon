@@ -49,7 +49,7 @@ def temperature(t, cold=0, warm=15, hot=35):
     # than green and blue, so "warm" should be on the cold side
 
     if t is None:
-        return base.error("temperature: expected number, got None")
+        return base.error("weather.temperature: expected number, got None")
 
     try:
         if t > warm:
