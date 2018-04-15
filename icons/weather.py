@@ -43,6 +43,8 @@ _cond_names = {
 	"unknown":31
 }
 
+temp_banner = _cond_icons.get(7, 3, 8)
+
 def temperature(t, cold=0, warm=15, hot=35):
     # "warm" means what will get a green number.
     # There's more perceptual distance between red and green

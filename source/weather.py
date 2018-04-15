@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-from icons import weather, icons
 import logging
 import json
-from source.base_sources import FileDataSource, DataSource
+from icons import weather
+from source import source
 
-class Weather(FileDataSource):
+class Weather(source.FileDataSource):
     '''Returns icons for a weather report in a JSON input file of the format
 
 { "temperature": <number>, "conditions": <string> }
@@ -13,13 +13,13 @@ class Weather(FileDataSource):
 
     def __init__(self, **args):
         self.banner = None
-        FileDataSource.__init__(self, **args)
+        source.FileDataSource.__init__(self, **args)
 
     def read(self):
         obj = self._readJSON()
 
         if obj is None:
-            return icons.Report(weather.temperature(None))
+            return source.Report(weather.temperature(None))
 
         try:
             t = int(obj.get("temperature",None))
@@ -28,6 +28,17 @@ class Weather(FileDataSource):
 
         c = obj.get("conditions",None)
 
-        return icons.Report(weather.conditions(c), weather.temperature(t))
+        return self.report(c, t)
 
-DataSource.CHOICES["weather"] = Weather
+    def report(self, c, t):
+        return [ 
+                source.Report(weather.conditions(c)),
+                source.Report(weather.temperature(t), banner=weather.temp_banner)]
+
+class ShortWeather(Weather):
+    def report(self, c, t):
+        return source.Report(weather.conditions(c),
+                    weather.temperature(t))
+
+source.DataSource.CHOICES["weather"] = Weather
+source.DataSource.CHOICES["short-weather"] = ShortWeather

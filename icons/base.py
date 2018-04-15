@@ -12,6 +12,8 @@ _banner_icons = icons.IconSet(os.path.join(_here,"banners.ppm"))
 
 random_banner = _banner_icons.get(0, 0, 8)
 digit_banner = _banner_icons.get(1, 0, 8)
+count_banner = _banner_icons.get(2, 0, 8)
+plus_minus_banner = _banner_icons.get(3, 0, 8)
 
 def empty():
     return _number_icons.get(3, 0, 8)

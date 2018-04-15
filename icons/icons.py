@@ -116,19 +116,6 @@ class Icon:
             d.extend([0,0,0])
         return d
 
-class Report:
-    '''A Report is a set of icons representing something to report.
-It has a banner icon and a list of values, each of which is either an icon or a list of frames.'''
-    def __init__(self, *icons, banner=None):
-        self.banner = banner
-        self.icons = icons
-
-    def __iter__(self):
-        for i in self.icons:
-            yield i
-
-    def __len__(self):
-        return len(self.icons)
 
 class IconSet:
     def __init__(self, ppm_file):

@@ -2,8 +2,22 @@
 
 import random
 import json
-import icons.base as icons
 import logging
+from icons import base
+
+class Report:
+    '''A Report is a set of icons representing something to report.
+It has a banner icon and a list of values, each of which is either an icon or a list of frames.'''
+    def __init__(self, *icons, banner=None):
+        self.banner = banner
+        self.icons = icons
+
+    def __iter__(self):
+        for i in self.icons:
+            yield i
+
+    def __len__(self):
+        return len(self.icons)
 
 class DataSource:
     '''No help for this API.'''
@@ -19,7 +33,7 @@ class DataSource:
     def __init__(self, **args):
         self.args = args
         if not hasattr(self,"banner"):
-            self.banner = icons.digit_banner
+            self.banner = base.digit_banner
 
 
 class FileDataSource(DataSource):
