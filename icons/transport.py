@@ -16,16 +16,16 @@ def time_left(td, warn_notice):
     if td is None or not isinstance(td, datetime.timedelta):
         return base.error("time_left: expected timedelta, got %s" % td)
 
-    mins = (td.seconds + td.days*86400) // 60
-    warn_notice_mins = (warn_notice.seconds + warn_notice.days*86400) // 60
+    mins = td.total_seconds() // 60
+    warn_notice_mins = warn_notice.total_seconds() // 60
     return base.number(mins, icons.RED, 0, icons.GREEN, warn_notice_mins)
 
 def delay(td, warn_delay):
     if td is None or not isinstance(td, datetime.timedelta):
         return base.error("delay: expected timedelta, got %s" % td)
 
-    mins = (td.seconds + td.days*86400) // 60
-    warn_delay_mins = (warn_delay.seconds + warn_delay.days*86400) // 60
+    mins = td.total_seconds() // 60
+    warn_delay_mins = warn_delay.total_seconds() // 60
 
     if mins <= 0:
         return base.number(mins, icons.GREEN)
