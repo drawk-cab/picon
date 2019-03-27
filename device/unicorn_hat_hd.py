@@ -27,6 +27,7 @@ class UnicornHatHD(Device):
                 time.sleep(0.05)
         else:
             self._display_icon(icon)
+
         self.current = icon
 
         if is_banner:
@@ -58,22 +59,31 @@ class QuadUnicornHatHD(Device):
             self.icons = [[],[]]
         else:
             raise RuntimeError("Unicorn Hat display requires the unicornhathd module.")
+        self.page = 0
         Device.__init__(self, rotate)
         self.hat.rotation(self.rotate)
 
     def display_icon(self, icon, transition=None, clear=False, is_banner=False):
         if clear or is_banner or len(self.icons[1])>=2:
             self.newline()
+            if self.page % 2 == 1:
+                self.page += 1
+
         self.icons[1].append(icon)
         self.refresh()
+        self.page += 1
 
-        if is_banner:
-            time.sleep(0.1)
-        else:
+        if self.page == 4:
             time.sleep(1.5)
+            self.page = 0
+        elif self.page == 2:
+            time.sleep(0.2)
+        else:
+            time.sleep(0.1)
 
     def clear(self):
-        self.newline()
+        self.icons = [[], []]
+        self.page = 0
         self.refresh()
 
     def newline(self):

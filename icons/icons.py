@@ -52,7 +52,7 @@ def colour_between(n, c_min, n_min, c_max, n_max):
     dh = c_max[0]-c_min[0]
     ds = c_max[1]-c_min[1]
     dv = c_max[2]-c_min[2]
-    return (c_min[0]+dh*d, c_min[1]+ds*d, c_min[2]+ds*d)
+    return (c_min[0]+dh*d, c_min[1]+ds*d, c_min[2]+dv*d)
 
 class Icon:
     def __init__(self, data):
