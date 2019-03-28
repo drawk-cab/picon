@@ -7,28 +7,55 @@ import datetime
 import dateutil.parser
 from icons import icons, planets, base
 from source import source
+import re
 
 class Sunrise(source.FileDataSource):
     '''Returns the time of sunrise if night time, or sunset if daytime.
 
 {
-    "daytime": <true if sun is up>
-    "next": <next sunrise or sunset time>,
-    "weekday": <weekday 0..7>
-    "lastSunrise": <last sunrise time>,
-    "sunriseWeekday": <weekday at last sunrise>,
-    "hour": solar hour (12 between each sunrise/set)
-    "minute": solar minute (60 in each solar hour)
+    "events": [{
+        "event": <rise|set>,
+        "time": <ISO time of event>
+    }...]
 }
 '''
+    @staticmethod
+    def fromisoformat(s):
+        m = re.match('(....)-(..)-(..).(..):(..):(..)(.*)$', s)
+        if not m:
+            raise ValueError(s)
+        tz = m.group(7)
+        tzname = None
+        if tz=='Z':
+            tzname='utc'
+        if tzname is None:
+            raise ValueError
+        return datetime.datetime(*[int(m.group(x)) for x in range(1,7)], tzinfo=getattr(pytz, tzname))
 
     def read(self):
         obj = self._readJSON()
-        if obj is None:
+        if obj is None or not 'events' in obj:
             return []
 
-        # FIXME: extract hour and minute in a better way
-        return self.report(obj['daytime'], int(obj['next'][11:13]), int(obj['next'][14:16]))
+        daytime = None
+        now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+        last = None
+        next = None
+        last_sunrise = None
+        for e in obj['events']:
+            t = Sunrise.fromisoformat(e['time'])
+            if t < now:
+                last = t
+                if e['event']=='rise':
+                    last_sunrise = t
+                    daytime = True
+                else:
+                    daytime = False
+            else:
+                next = t
+                break
+
+        return self.report(daytime, next.hour, next.minute)
 
     def report(self, is_daytime, hour, minute):
         if is_daytime:
@@ -42,7 +69,33 @@ class PlanetaryHour(source.FileDataSource):
         if obj is None:
             return []
 
-        return self.report(obj['sunriseWeekday'], obj['hour'], obj['minute'])
+        daytime = None
+        now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+        last = None
+        next = None
+        last_sunrise = None
+        for e in obj['events']:
+            t = Sunrise.fromisoformat(e['time'])
+            if t < now:
+                last = t
+                if e['event']=='rise':
+                    last_sunrise = t
+                    daytime = True
+                else:
+                    daytime = False
+            else:
+                next = t
+                break
+
+        halfday_length = next - last
+        halfday_elapsed = (now - last) / halfday_length
+
+        hour = int(halfday_elapsed * 12)
+        minute = int(halfday_elapsed * 12 * 60) % 60
+        if not daytime:
+            hour += 12
+
+        return self.report(last_sunrise.isoweekday(), hour, minute)
 
     def report(self, sunrise_weekday, hour, minute):
         return [ source.Report(planets.hour(hour, sunrise_weekday, colour=icons.RED), banner = planets.weekday(sunrise_weekday, colour=icons.GREEN)),
