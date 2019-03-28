@@ -17,8 +17,8 @@ class Date(source.DataSource):
 
     def read(self):
         t = datetime.datetime.now()
-        return source.Report(base.number( t.day, colour=icons.RED ),
-            banner=base.number( t.month, colour=icons.WHITE ))
+        return source.Report(base.number( t.day, colour=icons.WHITE ),
+            banner=base.number( t.month, colour=icons.RED ))
 
 class Year(source.DataSource):
     '''Shows the current year'''

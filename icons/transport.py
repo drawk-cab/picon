@@ -16,17 +16,17 @@ def time_left(td, min_warn, max_warn, colour=icons.WHITE, warn_colour=icons.RED)
     if td is None or not isinstance(td, datetime.timedelta):
         return base.error("time_left: expected timedelta, got %s" % td)
 
-    mins = (td.seconds + td.days*86400) // 60
-    min_warn_mins = (min_warn.seconds + min_warn.days*86400) // 60
-    max_warn_mins = (max_warn.seconds + max_warn.days*86400) // 60
+    mins = td.total_seconds() // 60
+    min_warn_mins = min_warn.total_seconds() // 60
+    max_warn_mins = max_warn.total_seconds() // 60
     return base.number(mins, warn_colour, min_warn_mins, colour, max_warn_mins)
 
 def delay(td, warn_delay, colour=icons.GREEN, delay_colour=icons.AMBER, warn_colour=icons.RED):
     if td is None or not isinstance(td, datetime.timedelta):
         return base.error("delay: expected timedelta, got %s" % td)
 
-    mins = (td.seconds + td.days*86400) // 60
-    warn_delay_mins = (warn_delay.seconds + warn_delay.days*86400) // 60
+    mins = td.total_seconds() // 60
+    warn_delay_mins = warn_delay.total_seconds() // 60
 
     if mins <= 0:
         return base.number(mins, colour)

@@ -1,6 +1,9 @@
 [
     {   "source": "time"
     },
+    {   "source": "moon",
+        "filename": "samples/moon"
+    },
     {   "source": "random",
         "min": 1,
         "max": 6
