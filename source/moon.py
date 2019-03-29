@@ -30,9 +30,9 @@ class Moon(source.FileDataSource):
             colour = icons.GREEN # waxing
         else:
             colour = icons.RED # waning
-        return [
-                source.Report(base.number(illumination, colour), banner=planets.moon_phase_angle(phase))
-               ]
+        return source.Report(base.number(illumination, colour),
+                             banner=planets.moon_phase_angle(phase),
+                             label="Moon:{}deg {}%".format(phase, illumination))
 
 source.DataSource.CHOICES["moon"] = Moon
 

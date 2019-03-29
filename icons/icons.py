@@ -4,9 +4,13 @@ import re
 import logging
 
 RED = (0, 0, 0)
+ORANGE = (0.1, 0, 0)
 AMBER = (0.15, 0, 0)
+YELLOW = (0.2, 0, 0)
 GREEN = (0.35, 0, 0)
+CYAN = (0.5, 0, 0)
 BLUE = (0.65, 0, 0)
+MAGENTA = (0.8, 0, 0)
 WHITE = (0, -1, 0)
 
 def _skip_comments(f):
@@ -58,7 +62,7 @@ class Icon:
     def __init__(self, data):
         self.data = data
 
-    def __repr__(self):
+    def __str__(self):
         s = ''
         for y in range(len(self.data)):
             for x in self.data[y]:
@@ -67,6 +71,9 @@ class Icon:
                 s += 'B'*(x[2]>0.9) or 'b'*(x[2]>0.4) or ' '
             s += '\n'
         return s
+
+    def __repr__(self):
+        return '(icon)'
 
     def colour(self, dhsv):
         dh, ds, dv = dhsv

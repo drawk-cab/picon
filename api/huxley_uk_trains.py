@@ -10,7 +10,7 @@ accessToken = os.environ["HUXLEY_ACCESS_TOKEN"]
 crs = os.environ["HUXLEY_START_CRS"]
 filter = os.environ["HUXLEY_END_CRS"]
 
-url = "https://huxley.apphb.com/departures/{}/to/{}?accessToken={}".format(crs, filterCrs, accessToken)
+url = "https://huxley.apphb.com/departures/{}/to/{}?accessToken={}".format(crs, filter, accessToken)
 
 r = requests.get(url)
 j = r.json()

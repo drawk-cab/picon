@@ -14,10 +14,7 @@ class SenseHat(Device):
         Device.__init__(self, rotate)
         self.hat.rotation = rotate
 
-    def display_icon(self, icon, transition=None, clear=False, is_banner=False):
-        if clear:
-            self.clear()
-
+    def display_icon(self, icon, transition=None):
         if transition:
             for frame in self.current.transition(icon, transition):
                 self.hat.set_pixels(frame.get_pixels())
@@ -32,14 +29,12 @@ class SenseHat(Device):
             time.sleep(1.5)
 
 
-    def clear(self, wait=True):
+    def clear(self):
         self.hat.clear()
-        if wait:
-            time.sleep(0.5)
         self.current = None
 
     def __exit__(self, *args):
-        self.clear(wait=False)
+        self.clear()
 
 try:
     from sense_hat import SenseHat as _SenseHat

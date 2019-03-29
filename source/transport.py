@@ -39,6 +39,8 @@ class Transport(source.FileDataSource):
         out = []
         if all is None:
             return out
+        prev_mode = None
+        prev_service = None
 
         for obj in all:
             now = datetime.datetime.now(pytz.utc)
@@ -50,6 +52,8 @@ class Transport(source.FileDataSource):
                 mode = transport.TRAM
             else:
                 mode = transport.TRAIN
+
+            service = obj.get("service",None)
 
             try:
                 scheduled = dateutil.parser.parse(obj.get("scheduled",None))
@@ -75,19 +79,46 @@ class Transport(source.FileDataSource):
             else:
                 is_delayed = False
 
-            out.extend(self.report(mode, wait, is_delayed, delay))
+            if mode == prev_mode and service == prev_service:
+                out.append(self.report(None, False, wait, is_delayed, delay))
+            else:
+                out.append(self.report(mode, service, wait, is_delayed, delay))
+                prev_mode = mode
+                prev_service = service
+
         return out
 
-    def report(self, mode, wait, is_delayed, delay):
-        return [
-                source.Report(transport.time_left(wait, self.walk, self.warn), banner=transport.mode(mode)),
-                source.Report(transport.delay(delay, self.delay), banner=base.plus_minus_banner)]
+    def report(self, mode, service, wait, is_delayed, delay):
+        if mode is not None:
+            mode = transport.mode(mode)
+
+        if service is False: # Means this was the same as before, as opposed to None (no value)
+            return source.Report(
+                             transport.time_left(wait, self.walk, self.warn), 
+                             transport.delay(delay, self.delay),
+                             banner=mode,
+                             label="Transport:{}-{} {} {} {}".format(repr(mode), repr(service), wait, is_delayed, delay))
+        elif service is not None:
+            try:
+                n = int(service)
+                if n<0 or n>99:
+                    raise ValueError
+                service = base.number(n)
+            except ValueError:
+                service = None
+
+        return source.Report(service,
+                             transport.time_left(wait, self.walk, self.warn), 
+                             transport.delay(delay, self.delay),
+                             banner=mode,
+                             label="Transport:{}-{} {} {} {}".format(repr(mode), repr(service), wait, is_delayed, delay))
 
 class ShortTransport(Transport):
     def report(self, mode, wait, is_delayed, delay):
         return source.Report(
             transport.is_delayed(is_delayed, mode),
-            transport.time_left(wait, self.warn, self.warn))
+            transport.time_left(wait, self.warn, self.warn),
+            label="ShortTransport:{} {} {} {}".format(mode, wait, is_delayed, delay))
 
 source.DataSource.CHOICES["short-transport"] = ShortTransport
 source.DataSource.CHOICES["transport"] = Transport

@@ -5,7 +5,7 @@ import json
 import pytz
 import datetime
 import dateutil.parser
-from icons import icons, planets, base
+from icons import icons, planets, base, weather
 from source import source
 import re
 
@@ -59,9 +59,13 @@ class Sunrise(source.FileDataSource):
 
     def report(self, is_daytime, hour, minute):
         if is_daytime:
-          return [ source.Report(base.number(minute, colour=icons.RED), banner=base.number(hour, icons.RED)) ]
+          return source.Report(base.number(hour, icons.RED), base.number(minute, colour=icons.RED),
+                      banner=weather.conditions('sun'),
+                      label="Sunrise:set {}{}".format(minute, hour))
         else:
-          return [ source.Report(base.number(minute, colour=icons.AMBER), banner=base.number(hour, icons.AMBER)) ]
+          return source.Report(base.number(hour, icons.AMBER), base.number(minute, colour=icons.AMBER),
+                      banner=weather.conditions('sun'),
+                      label="Sunrise:rise {}{}".format(minute, hour))
 
 class PlanetaryHour(source.FileDataSource):
     def read(self):
@@ -98,9 +102,11 @@ class PlanetaryHour(source.FileDataSource):
         return self.report(last_sunrise.isoweekday(), hour, minute)
 
     def report(self, sunrise_weekday, hour, minute):
-        return [ source.Report(planets.hour(hour, sunrise_weekday, colour=icons.RED), banner = planets.weekday(sunrise_weekday, colour=icons.GREEN)),
-                 source.Report(base.number(minute), banner = base.number(hour))
-               ]
+        return source.Report(planets.hour(hour, sunrise_weekday, colour=icons.RED),
+                               base.number(hour),
+                               base.number(minute),
+                               banner=planets.weekday(sunrise_weekday, colour=icons.GREEN),
+                               label="PlanetaryHour:{} {}{}".format(sunrise_weekday,hour,minute))
 
 source.DataSource.CHOICES["sunrise"] = Sunrise
 source.DataSource.CHOICES["planetary-hour"] = PlanetaryHour

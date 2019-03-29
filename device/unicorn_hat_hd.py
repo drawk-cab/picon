@@ -17,10 +17,16 @@ class UnicornHatHD(Device):
         Device.__init__(self, rotate)
         self.hat.rotation(self.rotate)
 
-    def display_icon(self, icon, transition=None, clear=False, is_banner=False):
-        if clear:
-            self.clear()
+    def post_section(self):
+        time.sleep(0.3)
 
+    def post_banner(self, item=None):
+        time.sleep(0.3)
+
+    def post_icon(self):
+        time.sleep(0.5)
+
+    def display_icon(self, icon, transition=None):
         if transition:
             for frame in self.current.transition(icon, transition):
                 self._display_icon(frame)
@@ -30,12 +36,9 @@ class UnicornHatHD(Device):
 
         self.current = icon
 
-        if is_banner:
-            time.sleep(0.8)
-        else:
-            time.sleep(1.5)
-
     def _display_icon(self, icon):
+        if icon is None:
+            return
         for y in range(self.width):
             for x in range(self.height):
                 r, g, b = icon.get_pixel(x/self.width,y/self.height)
@@ -44,12 +47,10 @@ class UnicornHatHD(Device):
 
     def clear(self, wait=True):
         self.hat.off()
-        if wait:
-            time.sleep(0.5)
         self.current = None
 
     def __exit__(self, *args):
-        self.clear(wait=False)
+        self.clear()
 
 class QuadUnicornHatHD(Device):
     def __init__(self, rotate=0):
@@ -59,35 +60,49 @@ class QuadUnicornHatHD(Device):
             self.icons = [[],[]]
         else:
             raise RuntimeError("Unicorn Hat display requires the unicornhathd module.")
-        self.page = 0
         Device.__init__(self, rotate)
         self.hat.rotation(self.rotate)
 
-    def display_icon(self, icon, transition=None, clear=False, is_banner=False):
-        if clear or is_banner or len(self.icons[1])>=2:
-            self.newline()
-            if self.page % 2 == 1:
-                self.page += 1
+    def __len__(self):
+        return sum(len(x) for x in self.icons)
 
+    def pre_section(self):
+        pass
+
+    def post_section(self):
+        time.sleep(0.3)
+
+    def pre_banner(self):
+        time.sleep(0.4)
+        if len(self.icons[1])<2:
+            self.newline()
+
+    def post_banner(self, item=None):
+        if getattr(item,'icons'):
+            if len(item.icons)==2:
+                time.sleep(0.3)
+                self.newline() # put 2 icons together on the lower line rather than splitting them
+
+    def pre_icon(self):
+        pass
+
+    def post_icon(self):
+        time.sleep(0.15)
+
+    def display_icon(self, icon, transition=None):
+        if len(self.icons[1])==2:
+            self.newline()
         self.icons[1].append(icon)
         self.refresh()
-        self.page += 1
-
-        if self.page == 4:
-            time.sleep(1.5)
-            self.page = 0
-        elif self.page == 2:
-            time.sleep(0.2)
-        else:
-            time.sleep(0.1)
 
     def clear(self):
-        self.icons = [[], []]
+        for i in range(2):
+            self.newline()
         self.page = 0
-        self.refresh()
 
     def newline(self):
         self.icons = [self.icons[1], []]
+        self.refresh()
 
     def refresh_space(self, xs, ys, icon):
         w = self.width//2

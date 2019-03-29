@@ -7,16 +7,25 @@ from icons import base
 
 class Report:
     '''A Report is a set of icons representing something to report.
-It has a banner icon and a list of values, each of which is either an icon or a list of frames.'''
-    def __init__(self, *icons, banner=None):
+It has an optional banner icon and a list of values, each of which is either an icon or a list of frames
+to be animated in a single space.'''
+    def __init__(self, *icons, banner=None, label=None):
         self.banner = banner
         self.icons = icons
+        self.label = label
+
+    def __repr__(self):
+        if self.label:
+            return "<Report:{}>".format(self.label)
+        return "<Report>"
 
     def __iter__(self):
         for i in self.icons:
             yield i
 
     def __len__(self):
+        if self.banner:
+            return len(self.icons)+1
         return len(self.icons)
 
 class DataSource:
