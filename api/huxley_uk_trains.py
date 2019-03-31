@@ -9,8 +9,13 @@ accessToken = os.environ["HUXLEY_ACCESS_TOKEN"]
 # CRS codes here: http://www.nationalrail.co.uk/static/documents/content/station_codes.csv
 crs = os.environ["HUXLEY_START_CRS"]
 filter = os.environ["HUXLEY_END_CRS"]
+service_mode = "train"
+service_name = os.environ["HUXLEY_SERVICE"]
+
 
 url = "https://huxley.apphb.com/departures/{}/to/{}?accessToken={}".format(crs, filter, accessToken)
+mode_props = { "train": "trainServices", "bus": "busServices", "ferry": "ferryServices" }
+
 
 r = requests.get(url)
 j = r.json()
@@ -26,16 +31,24 @@ def hhmm_to_datetime(hhmm):
     return then
 
 
-t = []
-for train in j.get('trainServices',[]):
-    try:
-        std = hhmm_to_datetime(train['std'])
-        if train['etd']=="On time":
-            etd = std
-        else:
-            etd = hhmm_to_datetime(train['etd'])
-        t.append({ 'mode':'train', 'scheduled': std.isoformat(), 'estimated': etd.isoformat() })
-    except ValueError:
-        pass
+out = []
 
-print(json.dumps(t))
+for mode, prop in mode_props.items():
+    services = j.get(prop, None)
+    if services:
+        for service in services:
+            try:
+                std = hhmm_to_datetime(service['std'])
+                if service['etd']=="On time":
+                    etd = std
+                else:
+                    etd = hhmm_to_datetime(service['etd'])
+                report = { 'service':service_name, 'mode':mode, 'scheduled': std.isoformat(), 'estimated': etd.isoformat() }
+                if mode != service_mode:
+                    report['replacement'] = True
+                out.append(report)
+
+            except ValueError:
+                pass
+
+print(json.dumps(out))

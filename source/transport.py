@@ -36,9 +36,11 @@ class Transport(source.FileDataSource):
 
     def read(self):
         all = self._readJSON()
+        if not all:
+            return source.Report(banner=transport.mode(transport.TRAIN),
+                             label="Transport:No services")
+
         out = []
-        if all is None:
-            return out
         prev_mode = None
         prev_service = None
 
@@ -54,6 +56,8 @@ class Transport(source.FileDataSource):
                 mode = transport.TRAIN
 
             service = obj.get("service",None)
+
+            replacement = obj.get("replacement",False)
 
             try:
                 scheduled = dateutil.parser.parse(obj.get("scheduled",None))
@@ -80,17 +84,20 @@ class Transport(source.FileDataSource):
                 is_delayed = False
 
             if mode == prev_mode and service == prev_service:
-                out.append(self.report(None, False, wait, is_delayed, delay))
+                out.append(self.report(None, False, wait, is_delayed, delay, replacement))
             else:
-                out.append(self.report(mode, service, wait, is_delayed, delay))
+                out.append(self.report(mode, service, wait, is_delayed, delay, replacement))
                 prev_mode = mode
                 prev_service = service
 
         return out
 
-    def report(self, mode, service, wait, is_delayed, delay):
+    def report(self, mode, service, wait, is_delayed, delay, is_replacement=False):
         if mode is not None:
-            mode = transport.mode(mode)
+            if is_replacement:
+                mode = transport.mode(mode, colour=icons.RED)
+            else:
+                mode = transport.mode(mode)
 
         if service is False: # Means this was the same as before, as opposed to None (no value)
             return source.Report(

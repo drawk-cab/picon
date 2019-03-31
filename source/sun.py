@@ -2,7 +2,7 @@
 
 import logging
 import json
-import pytz
+import pytz, tzlocal
 import datetime
 import dateutil.parser
 from icons import icons, planets, base, weather
@@ -21,6 +21,9 @@ class Sunrise(source.FileDataSource):
 '''
     @staticmethod
     def fromisoformat(s):
+        if hasattr(datetime.datetime, 'fromisoformat'):
+            return datetime.datetime.fromisoformat(s)
+
         m = re.match('(....)-(..)-(..).(..):(..):(..)(.*)$', s)
         if not m:
             raise ValueError(s)
@@ -55,6 +58,7 @@ class Sunrise(source.FileDataSource):
                 next = t
                 break
 
+        next = next.astimezone(tzlocal.get_localzone())
         return self.report(daytime, next.hour, next.minute)
 
     def report(self, is_daytime, hour, minute):
