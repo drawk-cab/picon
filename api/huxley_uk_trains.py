@@ -24,8 +24,8 @@ def hhmm_to_datetime(hhmm):
     if ':' not in hhmm:
         raise ValueError
     hh, mm = hhmm.split(':')
-    now = datetime.datetime.now(pytz.utc)
-    then = datetime.datetime(now.year, now.month, now.day, int(hh), int(mm), tzinfo=pytz.utc)
+    now = datetime.datetime.now(tz=pytz.timezone('Europe/London'))
+    then = now.replace(hour=int(hh), minute=int(mm)) #datetime.datetime(now.year, now.month, now.day, int(hh), int(mm), tz=pytz.timezone('Europe/London'))
     if then<now:
         then += datetime.timedelta(1)
     return then

@@ -89,7 +89,6 @@ class Transport(source.FileDataSource):
                 out.append(self.report(mode, service, wait, is_delayed, delay, replacement))
                 prev_mode = mode
                 prev_service = service
-
         return out
 
     def report(self, mode, service, wait, is_delayed, delay, is_replacement=False):

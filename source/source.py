@@ -55,14 +55,14 @@ class FileDataSource(DataSource):
         try:
             return open(self.filename,"r").read(bytes)
         except IOError:
-            logging.warn("Couldn't read from file %s" % self.filename)
+            logging.warn("Couldn't read from file {}".format(self.filename))
             return None
 
     def _readJSON(self):
         try:
             return json.load(open(self.filename,"r"))
-        except (IOError, ValueError):
-            logging.warn("Couldn't read JSON from file %s" % self.filename)
+        except (IOError, ValueError) as e:
+            logging.warn("Couldn't read JSON from file {}: {}".format(self.filename,e))
             return None
 
     def __init__(self, filename, **args):
