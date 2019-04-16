@@ -35,9 +35,9 @@ phase: 0 = new moon, 1 = first quarter, 2 = full moon, 3 = third quarter.
 age: timedelta after the given phase.
 You can supply age only, it will use the configured approximate average month of 29.53 days.'''
     ## 16.5 places full moon halfway through icon 16
-    age = ( int( 16.5 + age.total_seconds() * 32 / MONTH.total_seconds() ) ) % 32
-    return _planet_icons.get(age % 8, 4-(age // 8)).colour(colour)
+    angle = ( (age.total_seconds()/MONTH.total_seconds())*360 + phase*90 ) % 360
+    return moon_phase_angle(angle, colour)
 
 def moon_phase_angle(angle, colour=icons.WHITE):
-    age = ( int( 16.5 + angle * 32/360) ) % 32
-    return _planet_icons.get(age % 8, 4-(age // 8)).colour(colour)
+    icon = ( int( 16.5 + angle * 32/360) ) % 32
+    return _planet_icons.get(icon % 8, 4-(icon // 8)).colour(colour)
