@@ -8,7 +8,11 @@ And how to satisfy them on a Raspberry Pi
 
 * Python 3 (out of the box)
 * `dateutil` : `sudo apt-get install python3-dateutil`
-* `sense_hat` (https://pythonhosted.org/sense-hat/) : `sudo apt-get install sense-hat; sudo pip3 install pillow`
+* Sense HAT (https://pythonhosted.org/sense-hat/) : `sudo apt-get install sense-hat`
+* Unicorn HAT : `pip3 install --user unicornhathd`
+* For sunrise, moon phases etc : `pip3 install --user skyfield`
+
+NB. Install Sense HAT before skyfield to avoid having two conflicting copies of numpy floating about.
 
 ## How to run
 
@@ -20,6 +24,8 @@ It should display a single icon until you exit the program.
 
 By default, the icon is output to your terminal. To display
 on a connected Sense HAT, run `./display_icon.py -d sense`
+
+If it doesn't work, check the dependencies above. Also check SPI is enabled in `raspi-config`.
 
 ### Display an icon that depends on a value in a file
 

@@ -21,9 +21,6 @@ class Sunrise(source.FileDataSource):
 '''
     @staticmethod
     def fromisoformat(s):
-        if hasattr(datetime.datetime, 'fromisoformat'):
-            return datetime.datetime.fromisoformat(s)
-
         m = re.match('(....)-(..)-(..).(..):(..):(..)(.*)$', s)
         if not m:
             raise ValueError(s)
