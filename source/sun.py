@@ -100,6 +100,9 @@ class PlanetaryHour(source.FileDataSource):
         if not daytime:
             hour += 12
 
+        if not last_sunrise:
+            return None # couldn't figure out what day it was
+
         return self.report(last_sunrise.isoweekday(), hour, minute)
 
     def report(self, sunrise_weekday, hour, minute):

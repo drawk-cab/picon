@@ -1,11 +1,6 @@
 #!/usr/bin/python3
 
-import logging
-import argparse
-import time
-import json
-import source
-import device
+import logging, argparse, time, datetime, json, source, device
 
 if __name__=="__main__":
 
@@ -42,10 +37,10 @@ if __name__=="__main__":
             logging.warn("No config.file specified, using 'config.json'")
         for source_args in config:
             if "source" not in source_args:
-                logging.warn("No source specified in config item: {}".format(source_args))
+                logging.warn(f"No source specified in config item: {source_args}")
                 continue
             if source_args["source"] not in source.choices:
-                logging.warn("Unknown source in config item: {}".format(source_args))
+                logging.warn(f"Unknown source in config item: {source_args}")
                 continue
             carousel.append( source.choices[source_args["source"]](**source_args) )
 
@@ -56,7 +51,10 @@ if __name__=="__main__":
         while looping:
             for each_source in carousel:
                 result = each_source.read()
-                use_device.display_section(result, each_source["transition"])
+                if result:
+                    use_device.display_section(result, each_source["transition"])
+                else:
+                    logging.warn(f"No result from {each_source} at {datetime.datetime.now().isoformat()}")
             if (time.time() - start_time) > (args.loop*60):
                 loop = False
 

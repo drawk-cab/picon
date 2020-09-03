@@ -12,7 +12,10 @@ ts = api.load.timescale()
 now = ts.now()
 dtnow = datetime.datetime.utcnow().replace(tzinfo=api.utc)
 
+# picon expects there to be at least one past sunrise in this list
+# so 24 hours isn't enough in the autumn
 window = datetime.timedelta(1)
+
 guess_start = ts.utc(dtnow-window)
 guess_end = ts.utc(dtnow+window)
 
