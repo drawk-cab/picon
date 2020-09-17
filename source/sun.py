@@ -60,11 +60,11 @@ class Sunrise(source.FileDataSource):
 
     def report(self, is_daytime, hour, minute):
         if is_daytime:
-          return source.Report(base.number(hour, icons.RED), base.number(minute, colour=icons.RED),
+          return source.Report(base.number(hour, icons.RED, zero_pad=True), base.number(minute, colour=icons.RED, zero_pad=True),
                       banner=weather.conditions('sun'),
                       label="Sunrise:set {}{}".format(minute, hour))
         else:
-          return source.Report(base.number(hour, icons.AMBER), base.number(minute, colour=icons.AMBER),
+          return source.Report(base.number(hour, icons.AMBER, zero_pad=True), base.number(minute, colour=icons.AMBER, zero_pad=True),
                       banner=weather.conditions('sun'),
                       label="Sunrise:rise {}{}".format(minute, hour))
 
@@ -107,8 +107,8 @@ class PlanetaryHour(source.FileDataSource):
 
     def report(self, sunrise_weekday, hour, minute):
         return source.Report(planets.hour(hour, sunrise_weekday, colour=icons.RED),
-                               base.number(hour),
-                               base.number(minute),
+                               base.number(hour,zero_pad=True),
+                               base.number(minute,zero_pad=True),
                                banner=planets.weekday(sunrise_weekday, colour=icons.GREEN),
                                label="PlanetaryHour:{} {}{}".format(sunrise_weekday,hour,minute))
 

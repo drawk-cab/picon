@@ -9,8 +9,8 @@ class Time(source.DataSource):
 
     def read(self):
         t = datetime.datetime.now()
-        return source.Report(base.number( t.minute, colour=icons.WHITE ),
-            banner=base.number( t.hour, colour=icons.ORANGE ),
+        return source.Report(base.number( t.minute, colour=icons.WHITE, zero_pad=True ),
+            banner=base.number( t.hour, colour=icons.ORANGE, zero_pad=True ),
             label="Time:{}{}".format(t.hour,t.minute))
 
 class Date(source.DataSource):

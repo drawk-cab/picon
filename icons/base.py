@@ -28,7 +28,7 @@ def error(e):
 def unknown(colour=icons.RED):
     return _number_icons.get(0, 0, 8).colour(colour)
 
-def number(n, colour=icons.WHITE, n_min=0, c_max=None, n_max=0):
+def number(n, colour=icons.WHITE, n_min=0, c_max=None, n_max=0, zero_pad=False):
     if n is None:
         return unknown()
 
@@ -43,6 +43,9 @@ def number(n, colour=icons.WHITE, n_min=0, c_max=None, n_max=0):
         return _number_icons.get(1, 0, 8).colour(colour)
     if n < -9:
         return _number_icons.get(2, 0, 8).colour(colour)
+    if n < 10 and zero_pad:
+        n = 12 - n
+        return _number_icons.get(n%8, n//8, 8).colour(colour)
 
-    n = 104 - n
+    n = 112 - n
     return _number_icons.get(n%8, n//8, 8).colour(colour)

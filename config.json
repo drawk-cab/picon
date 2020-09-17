@@ -15,18 +15,8 @@
     {   "source": "counter",
         "max": 99
     },
-    {   "source": "transport",
-        "filename": "samples/transport",
-        "delay": 15,
-        "notice": 10
-    },
     {   "source": "weather",
         "filename": "samples/weather"
-    },
-    {   "source": "short-transport",
-        "filename": "samples/transport",
-        "delay": 5,
-        "notice": 20
     },
     {   "source": "short-weather",
         "filename": "samples/weather"
